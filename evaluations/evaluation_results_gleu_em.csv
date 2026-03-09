@@ -1,0 +1,190 @@
+sample_idx,question,reference_cypher,StableCode-Instruct-3B_prediction,StableCode-Instruct-3B_gleu,StableCode-Instruct-3B_em,Llama-3-8B-Instruct_prediction,Llama-3-8B-Instruct_gleu,Llama-3-8B-Instruct_em,Llama-3.1-8B-Instruct_prediction,Llama-3.1-8B-Instruct_gleu,Llama-3.1-8B-Instruct_em,CodeLlama-7B-Instruct_prediction,CodeLlama-7B-Instruct_gleu,CodeLlama-7B-Instruct_em,Gemma-2-9B-IT_prediction,Gemma-2-9B-IT_gleu,Gemma-2-9B-IT_em,CodeGemma-7B-IT_prediction,CodeGemma-7B-IT_gleu,CodeGemma-7B-IT_em
+0,What are the roles of persons acting in movies with a tagline mentioning 'end'?,"MATCH (p:Person)-[r:ACTED_IN]->(m:Movie) WHERE m.tagline CONTAINS 'end' RETURN p.name, r.roles","Cypher query:
+```
+MATCH (m:Movie)-[:ACTED_IN]->(p:Person)
+WHERE m.tagline CONTAINS 'end'
+RETURN p.roles
+```
+This query will return the roles of persons that are acting in movies which have a tagline mentioning 'end'. The `MATCH` command is used to find the relationship between the person and the movie, the `WHERE` clause is used to filter out the movies with a tagline containing the word 'end', and the `RETURN` statement is used to return the roles of the persons.<|im_end|>",0.050335570469798654,0,"MATCH (p:Person)-[:ACTED_IN]->(m:Movie) 
+WHERE m.tagline CONTAINS 'end' 
+UNWIND p.roles AS role 
+RETURN p.name, role;",0.30434782608695654,0,"MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
+WHERE m.tagline CONTAINS 'end'
+RETURN p.name, r.roles",1.0,0,"MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WHERE m.tagline CONTAINS ""end""
+RETURN p.name, m.title, m.tagline, m.released, m.votes, m.tagline
+ORDER BY m.released DESC
+LIMIT 10;",0.14285714285714285,0,"MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WHERE m.tagline CONTAINS 'end'
+RETURN p.name, m.title, p.roles",0.5588235294117647,0,"MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WHERE m.tagline CONTAINS 'end'
+RETURN p.name, m.title, a.roles",0.5588235294117647,0
+1,"Search for the article_id values from 20 Article that are linked to Journal via PUBLISHED_IN with pages = 1-31, and return article_id along with the respective Journal counts!","MATCH (n:Article) -[r:PUBLISHED_IN]->(m:Journal) WHERE r.pages='1-31' WITH DISTINCT n, m RETURN n.article_id AS article_id, count(m) AS count LIMIT 20","Here is the Cypher query that would answer the user's question:
+
+```cypher
+MATCH (a:Article)-[p:PUBLISHED_IN]->(j:Journal)
+WHERE a.article_id = 20 AND p.pages = '1-31'
+AND a.article_id = j.article_id
+RETURN a.article_id, count(j)
+```
+
+This query matches the Article nodes that have a PUBLISHED_IN relationship with the Journal nodes where the pages value is 1-31 and the article_id is 20. It then returns the article_id along with the count of the respective Journal nodes. The last line of the query, `RETURN a.article_id, count(j)`, ensures that only the article_id and the count of the respective Journal nodes are returned.<|im_end|>",0.013513513513513514,0,"MATCH (a:Article)-[:PUBLISHED_IN]->(j:Journal)
+WHERE a.article_id >= 20 AND j.pages >= '1' AND j.pages <= '31'
+RETURN a.article_id, COUNT(j) AS journal_count",0.07142857142857142,0,"MATCH (a:Article)-[r:PUBLISHED_IN {pages: ""1-31""}]->(j:Journal)
+RETURN a.article_id, COUNT(j) AS journal_count
+ORDER BY a.article_id DESC
+LIMIT 20",0.09090909090909091,0,"MATCH (a:Article)-[:PUBLISHED_IN {pages: 1-31}]->(j:Journal)
+RETURN a.article_id, COUNT(j)",0.030303030303030304,0,"MATCH (a:Article)-[:PUBLISHED_IN]->(j:Journal)
+WHERE a.article_id BETWEEN 1 AND 20
+AND j.pages = '1-31'
+RETURN a.article_id, COUNT(j) AS JournalCount
+ORDER BY a.article_id ASC",0.0641025641025641,0,"MATCH (a:Article)-[:PUBLISHED_IN]->(j:Journal)
+WHERE a.article_id >= 20 AND a.article_id < 40 AND j.pages = '1-31'
+RETURN a.article_id, count(j) as JournalCount
+ORDER BY a.article_id",0.04878048780487805,0
+2,List the top 5 products that have been ordered more than 50 times.,"MATCH (:Order)-[o:ORDERS]->(p:Product) WITH p, SUM(o.quantity) AS totalQuantity WHERE totalQuantity > 50 RETURN p.productName, totalQuantity ORDER BY totalQuantity DESC LIMIT 5","Cypher query:
+```
+MATCH (p:Product)-[:ORDERS]->(o:Order)
+WHERE o.orderID IN (
+    MATCH (o1:Order)-[:ORDERS]->(p1:Product)
+    RETURN o1.orderID
+    ORDER BY COUNT(o1) DESC
+    LIMIT 5
+)
+RETURN p.productName, COUNT(o) AS order_count
+ORDER BY order_count DESC
+LIMIT 5
+```
+This query will return the top 5 most ordered products that have been ordered more than 50 times. It first finds all orders that have been placed by products, then counts the number of times each product has been ordered. It then returns the top 5 products ordered most.<|im_end|>",0.050314465408805034,0,"MATCH (p:Product)-[:ORDERS]->(o:Order) 
+WITH p, COUNT(o) as orderCount 
+WHERE orderCount > 50 
+ORDER BY orderCount DESC 
+LIMIT 5 
+RETURN p.productName AS productName, orderCount AS orderCount",0.2111111111111111,0,"MATCH (p:Product)-[o:ORDERS]->(o2:Order)
+WHERE o.quantity > 50
+WITH p, COUNT(o) as count
+ORDER BY count DESC
+RETURN p.productName, count
+LIMIT 5",0.24324324324324326,0,"MATCH (p:Product)-[:ORDERS]->(o:Order)
+WHERE o.quantity > 50
+RETURN p.productName, o.quantity
+ORDER BY o.quantity DESC
+LIMIT 5",0.28378378378378377,0,"MATCH (p:Product)-[:ORDERS]->(o:Order)
+WITH p, COUNT(o) AS orderCount
+ORDER BY orderCount DESC
+LIMIT 5
+RETURN p.productName, orderCount",0.22972972972972974,0,"MATCH (p:Product)-[:ORDERS]->(o:Order)
+WHERE o.quantity > 50
+RETURN p.productName, o.quantity
+ORDER BY o.quantity DESC
+LIMIT 5",0.28378378378378377,0
+3,What are the names of poker players in descending order of earnings?,MATCH (T1:people)-[]-(T2:poker_player) RETURN T1.Name ORDER BY T2.Earnings DESC,"MATCH (p:poker_player)
+RETURN p.name
+ORDER BY p.earnings DESC
+
+Explanation:
+
+1. MATCH (p:poker_player) - This line is used to find all nodes that have the label ""poker_player"". The variable ""p"" is used to reference these nodes in the rest of the query.
+
+2. RETURN p.name - This line is used to return the ""name"" property of the nodes found in the first line.
+
+3. ORDER BY p.earnings DESC - This line is used to sort the results in descending order based on the ""earnings"" property of the nodes.
+
+This query will return the names of all poker players, sorted in descending order by their earnings.<|im_end|>",0.014634146341463415,0,"MATCH (p:people)-[:poker_player]->(pp:poker_player) 
+RETURN p.name AS name, SUM(pp.earnings) AS total_earnings 
+ORDER BY total_earnings DESC",0.13043478260869565,0,"MATCH (p:people)-[:poker_player]->(pp:poker_player)
+RETURN pp.name, pp.earnings
+ORDER BY pp.earnings DESC",0.2,0,"MATCH (p:PokerPlayer)-[:PLAYER]->(pp:People)
+RETURN pp.name AS name, pp.earnings AS earnings
+ORDER BY earnings DESC;",0.10869565217391304,0,"MATCH (p:poker_player)
+ORDER BY p.earnings DESC
+RETURN p.name",0.23076923076923078,0,"MATCH (p:poker_player)
+RETURN p.name, p.earnings
+ORDER BY p.earnings DESC",0.2,0
+4,List the names of all users who wrote a review in 2016.,MATCH (u:User)-[:WROTE]->(r:Review) WHERE r.date.year = 2016 RETURN DISTINCT u.name,"MATCH (u:User)-[:WROTE]->(r:Review)
+WHERE r.date = 2016
+RETURN u.name<|im_end|>",0.4,0,MATCH (u:User)-[:WROTE]->(r:Review)<-[:REVIEWS]-(b:Business) WHERE r.date >= '2016-01-01' AND r.date <= '2016-12-31' RETURN u.name AS username;,0.08,0,"MATCH (u:User)-[:WROTE]->(r:Review)-[:REVIEWS]->(b:Business)
+WHERE r.date >= '2016-01-01' AND r.date <= '2016-12-31'
+RETURN u.name",0.09523809523809523,0,MATCH (u:User)-[:WROTE]->(r:Review) WHERE r.date >= '2016-01-01' AND r.date <= '2016-12-31' RETURN u.name,0.19047619047619047,0,"MATCH (u:User)-[:WROTE]->(r:Review)
+WHERE r.date BETWEEN '2016-01-01' AND '2016-12-31'
+RETURN u.name",0.23529411764705882,0,"MATCH (u:User)-[:WROTE]->(r:Review)
+WHERE r.date >= '2016-01-01' AND r.date <= '2016-12-31'
+RETURN u.name",0.19047619047619047,0
+5,"Find the users who are mentioned in tweets that also mention hashtags used by ""Neo4j"".","MATCH (neo4j:User {name: ""Neo4j""})-[:POSTS]->(neo4jTweets:Tweet)-[:TAGS]->(hashtag:Hashtag) WITH hashtag MATCH (otherTweet:Tweet)-[:TAGS]->(hashtag) WITH otherTweet MATCH (otherTweet)-[:MENTIONS]->(user:User) RETURN DISTINCT user","To answer the user's question, we need to find the users who are mentioned in tweets that also mention hashtags used by ""Neo4j"". Here is the Cypher query to achieve this:
+
+```cypher
+MATCH (u:User)-[:MENTIONS]->(t:Tweet)
+WHERE t.text CONTAINS 'Neo4j' AND t.text CONTAINS '#'
+MATCH (u)-[:MENTIONS]->(h:Hashtag)
+WHERE h.name = 'education'
+RETURN u.screen_name
+```
+
+This query uses the `MATCH` clause to find the users who are mentioned in tweets that contain the hashtag ""education"" and also mention ""Neo4j"". The `WHERE` clause filters the results based on the specified conditions. Finally, the `RETURN` clause returns the `screen_name` property of the matched users.
+
+Please note that this query assumes the provided schema and properties. Make sure to adjust the property names and values according to your actual data.<|im_end|>",0.00823045267489712,0,"MATCH (u:User)-[:POSTS]->(t:Tweet)-[:MENTIONS]->(m:User)-[:SIMILAR_TO]->(n:User {screen_name: ""neo4j""})-[:TAGS]->(h:Hashtag) RETURN u;",0.037037037037037035,0,"MATCH (t:Tweet)-[:MENTIONS]->(m:User), (t)-[:TAGS]->(h:Hashtag), (h)-[:USING]->(u:User) WHERE u.name = ""Neo4j"" RETURN m",0.037037037037037035,0,"MATCH (u:User)-[:MENTIONS]->(t:Tweet)-[:TAGS]->(h:Hashtag)
+WHERE h.name IN [""Neo4j""]
+RETURN u.screen_name AS user_screen_name, u.name AS user_name, COUNT(DISTINCT t) AS num_tweets
+ORDER BY num_tweets DESC
+LIMIT 100",0.023255813953488372,0,"MATCH (u:User)-[:MENTIONS]->(t:Tweet)-[:TAGS]->(h:Hashtag)
+WHERE h.name = ""Neo4j""
+RETURN u",0.037037037037037035,0,"MATCH (u:User)-[:MENTIONS]->(t:Tweet)<-[:MENTIONS]-(ht:Hashtag)<-[:TAGS]-(t2:Tweet)-[:MENTIONS]->(u2:User)
+WHERE t.text CONTAINS ""Neo4j"" AND ht.name = ""Neo4j"" AND u2 <> u
+RETURN DISTINCT u2.name AS mentioned_user",0.05714285714285714,0
+6,Retrieve the Author where author_id or affiliation contains a95ff40457bf3cae9c6852c6a14937fa!,MATCH (n:Author) WHERE n.author_id CONTAINS 'a95ff40457bf3cae9c6852c6a14937fa' RETURN n AS node UNION ALL MATCH (m:Author) WHERE m.affiliation CONTAINS 'a95ff40457bf3cae9c6852c6a14937fa' RETURN m AS node,"The Cypher query to answer the user's question would be:
+
+```cypher
+MATCH (a:Author)
+WHERE (a.author_id CONTAINS 'a95ff40457bf3cae9c6852c6a14937fa' OR a.affiliation CONTAINS 'a95ff40457bf3cae9c6852c6a14937fa')
+RETURN a
+```
+
+This query will find all `Author` nodes where either the `author_id` property or the `affiliation` property contains the specified string 'a95ff40457bf3cae9c6852c6a14937fa'. The `MATCH` keyword is used to specify the pattern of the query, in this case, we're looking for `Author` nodes. The `WHERE` clause is used to filter the results, checking each node's properties against the specified string. The `CONTAINS` keyword is used to check if the string is contained within the property. Finally, the `RETURN` keyword is used to specify what should be returned - in this case, all matching `Author` nodes.<|im_end|>",0.015151515151515152,0,MATCH (a:Author) WHERE a.author_id CONTAINS 'a95ff40457bf3cae9c6852c6a14937fa' OR a.affiliation CONTAINS 'a95ff40457bf3cae9c6852c6a14937fa' RETURN a,0.13414634146341464,0,MATCH (a:Author) WHERE a.author_id =~ 'a95ff40457bf3cae9c6852c6a14937fa!' OR a.affiliation =~ 'a95ff40457bf3cae9c6852c6a14937fa!' RETURN a,0.036585365853658534,0,MATCH (a:Author {author_id: 'a95ff40457bf3cae9c6852c6a14937fa'}) OR (a:Author {affiliation: 'a95ff40457bf3cae9c6852c6a14937fa'}) RETURN a,0.024390243902439025,0,MATCH (a:Author) WHERE a.author_id CONTAINS 'a95ff40457bf3cae9c6852c6a14937fa' OR a.affiliation CONTAINS 'a95ff40457bf3cae9c6852c6a14937fa' RETURN a,0.13414634146341464,0,"MATCH (a:Author {author_id: ""a95ff40457bf3cae9c6852c6a14937fa"", affiliation: ""a95ff40457bf3cae9c6852c6a14937fa""})
+RETURN a",0.024390243902439025,0
+7,List the characters with a 'pagerank' greater than 0.2 and a 'centrality' less than 0.1.,MATCH (c:Character) WHERE c.pagerank > 0.2 AND c.centrality < 0.1 RETURN c.name,"Here is the Cypher query that would answer the user's question:
+
+```Cypher
+MATCH (c:Character)
+WHERE c.pagerank > 0.2 AND c.centrality < 0.1
+RETURN c.name
+```
+
+This query will find all the characters that have a 'pagerank' greater than 0.2 and a 'centrality' less than 0.1, and it will return their names.<|im_end|>",0.21212121212121213,0,"MATCH (c:Character) 
+WHERE c.pagerank > 0.2 AND c.centrality < 0.1 
+RETURN c;",0.9047619047619048,0,"MATCH (c:Character)
+WHERE c.pagerank > 0.2 AND c.centrality < 0.1
+RETURN c",0.9047619047619048,0,"MATCH (c:Character)
+WHERE c.pagerank > 0.2 AND c.centrality < 0.1
+RETURN c.name",1.0,0,"MATCH (c:Character)
+WHERE c.pagerank > 0.2 AND c.centrality < 0.1
+RETURN c.name",1.0,0,"MATCH (c:Character)
+WHERE c.pagerank > 0.2 AND c.centrality < 0.1
+RETURN c.name",1.0,0
+8,Find all nodes that don't have id 3,MATCH (n) WHERE n.node_id <> 3 RETURN n,"To find all nodes that don't have id 3, you can use the following Cypher query:
+
+```cypher
+MATCH (n)
+WHERE id(n)!= 3
+RETURN n
+```
+
+This query will match all nodes (`n`) and filter out the ones with an id of 3. The `id(n)` function returns the id of each node, and the `!=` operator checks for inequality. The `RETURN n` statement will return the nodes that meet the criteria.<|im_end|>",0.043795620437956206,0,MATCH (n) WHERE NOT (n.node_id = 3) RETURN n;,0.23333333333333334,0,MATCH (n) WHERE n.node_id <> 3 RETURN n,1.0,1,MATCH (n) WHERE id(n) <> 3 RETURN n,0.6153846153846154,0,MATCH (n) WHERE n.node_id <> 3 RETURN n,1.0,1,"MATCH (n)
+WHERE n.node_id <> 3
+RETURN n",1.0,0
+9,What are the names of the songs that are modern or sung in English?,"MATCH (s:Song)-[:ASSOCIATED_WITH]->(g:Genre) WHERE g.g_name = ""modern"" OR s.languages = ""english"" RETURN s.Song_name","To answer the user's question, you can use the following Cypher query:
+
+```cypher
+MATCH (s:Song)-[:CREATED_BY]->(a:Artist)
+WHERE (s.languages = 'English' OR s.releasedate ='modern')
+RETURN s.song_name
+```
+
+This query matches the `Song` nodes connected to the `Artist` nodes via the `CREATED_BY` relationship. It then filters the results to include only songs that are either modern or sung in English by checking the `languages` property or the `releasedate` property. Finally, it returns the `song_name` property of the matched songs.<|im_end|>",0.016778523489932886,0,"MATCH (s:Song)-[:STORED_IN]->(f:File) 
+WHERE f.formats CONTAINS'mp3' OR f.formats CONTAINS 'wav' 
+WITH s 
+WHERE s.genre_is = 'Modern' OR s.languages = 'English' 
+RETURN s.song_name AS song_name",0.11627906976744186,0,"MATCH (s:Song) WHERE s.genre_is = ""modern"" OR s.languages = ""English"" RETURN s.song_name",0.40476190476190477,0,MATCH (s:Song)-[:CREATED_BY]->(a:Artist) WHERE s.releasedate >= '2000-01-01' AND a.country = 'United States' AND a.languages = 'English' RETURN s.song_name AS song_name;,0.07142857142857142,0,"MATCH (s:Song)<-[:STORED_IN]-(f:File)
+WHERE f.formats =~ 'mp3' AND s.languages =~ 'English'
+RETURN s.song_name",0.09523809523809523,0,"MATCH (s:Song)-[:CREATED_BY]->(a:Artist)
+WHERE a.country = ""US"" AND s.language = ""English""
+RETURN s.song_name",0.11904761904761904,0
