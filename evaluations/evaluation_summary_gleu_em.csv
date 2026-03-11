@@ -1,8 +1,7 @@
 Model,Avg GLEU,Avg Exact Match,Num Samples,Error
-StableCode-Instruct-3B,0.08248750196090941,0.0,10,
-Llama-3-8B-Instruct,0.22228799775984664,0.0,10,
-CodeLlama-13B-Instruct,,,0,"CUDA out of memory. Tried to allocate 136.00 MiB. GPU 0 has a total capacity of 15.92 GiB of which 0 bytes is free. Of the allocated memory 28.62 GiB is allocated by PyTorch, and 1.06 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
-Llama-3.1-8B-Instruct,0.40125366418049346,0.1,10,
-CodeLlama-7B-Instruct,0.24905750442631747,0.0,10,
-Gemma-2-9B-IT,0.35851406453988954,0.1,10,
-CodeGemma-7B-IT,0.34824447115695323,0.0,10,
+StableCode-Instruct-3B,0.06028129886087594,0.0,200,
+Llama-3-8B-Instruct,0.24058730261078332,0.005,200,
+Llama-3.1-8B-Instruct,0.23307688822692413,0.005,200,
+CodeLlama-7B-Instruct,0.22829070984590827,0.005,200,
+Gemma-2-9B-IT,0.26942881454400747,0.01,200,
+CodeGemma-7B-IT,0.2564288474736331,0.0,200,
